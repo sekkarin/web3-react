@@ -16,20 +16,35 @@ import abi from "../../../Contract/abi.json";
 const [metaMask, hooks] = initializeConnector(
   (action) => new MetaMask({ actions: action })
 );
-const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider } =
-  hooks;
-const navigation = [
-  { name: "Dashboard", href: "#", current: true },
+const {
+  // useChainId,
+  useAccounts,
+  //  useIsActivating,
+  useIsActive,
+  useProvider,
+} = hooks;
 
-  // { name: "Connect MetaMask", href: "#", current: false },
-];
+const navigation = [{ name: "Dashboard", href: "#", current: true }];
 
-function classNames(...classes) {
+/**
+ * The `classNames` function takes in an array of strings and returns a single string with all
+ * non-empty strings joined together with a space separator.
+ * @param {string[]} classes - The `classes` parameter is a rest parameter that allows you to pass in
+ * any number of string arguments. These arguments represent the class names that you want to
+ * concatenate and return as a single string.
+ * @returns The function `classNames` returns a string that is the concatenation of all the non-empty
+ * strings in the `classes` array, separated by a space.
+ */
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
+/* The above code is declaring a constant variable named TOKEN which is an array of objects. Each
+object in the array represents a token and has two properties: name and conTract. The name property
+represents the name of the token and the conTract property represents the contract address of the
+token. */
 const TOKEN = [
   {
-    name: "KEN",
+    name: "KEMI",
     conTract: "0x5a1301d99489931059f5e89138edfec7fe52648b",
   },
   {
@@ -38,16 +53,22 @@ const TOKEN = [
   },
 ];
 const Home = () => {
-  const chainId = useChainId();
+  // const chainId = useChainId();
   const accounts = useAccounts();
-  const isActivating = useIsActivating();
+  // const isActivating = useIsActivating();
   const isActive = useIsActive();
+  /* The above code is written in TypeScript and React. It is using the `useProvider` hook to get the
+  provider object. */
   const provider = useProvider();
 
   const [balance, setBalance] = useState("");
+/* The above code is a TypeScript React code snippet. It declares a state variable called
+`contractAddress` using the `useState` hook. The initial value of `contractAddress` is set to the
+Ethereum contract address "0x5a1301d99489931059f5e89138edfec7fe52648b". */
   const [contractAddress, setContractAddress] = useState(
     "0x5a1301d99489931059f5e89138edfec7fe52648b"
   );
+  
   const [myAccount, setMyAccount] = useState("");
   const [hash, setHash] = useState("");
   const [buyToken, setBuyToken] = useState("");
@@ -55,12 +76,20 @@ const Home = () => {
 
   const contractChain = 11155111;
 
+  /* The above code is using the `useEffect` hook in a React component. It is calling the
+  `connectEagerly` method of the `metaMask` object, which is assumed to be an instance of the
+  MetaMask library. The `connectEagerly` method is used to connect to the MetaMask wallet. If the
+  connection fails, it logs a debug message. The `useEffect` hook is used to run this code once when
+  the component is mounted. The empty dependency array `[]` ensures that the effect is only run
+  once. */
   useEffect(() => {
     void metaMask.connectEagerly().catch(() => {
       console.debug("Failed to connect eagerly to metamask");
     });
   }, []);
 
+  /* The above code is a useEffect hook in a TypeScript React component. It is used to fetch and update
+  the balance of a specific account from a smart contract on the Ethereum blockchain. */
   useEffect(() => {
     (async () => {
       const signer: any = provider?.getSigner();
@@ -74,21 +103,31 @@ const Home = () => {
     })();
   }, [accounts, isActive, provider, contractAddress]);
 
+/**
+ * The handleConnect function activates the MetaMask extension for a specific contract chain.
+ */
   const handleConnect = () => {
     metaMask.activate(contractChain);
   };
 
+/**
+ * The function `handleDisconnect` resets the state of the MetaMask.
+ */
   const handleDisconnect = () => {
     metaMask.resetState();
   };
 
+  /**
+   * The function `handleBuyToken` is an asynchronous function that handles the process of buying
+   * tokens by interacting with a smart contract.
+   * @returns The function `handleBuyToken` does not have a return statement.
+   */
   const handleBuyToken = async () => {
     if (parseInt(buyToken) < 0) {
       return;
     }
     try {
       setIsloading(true);
-      console.log(buyToken);
 
       const signer: any = provider?.getSigner();
       const smartContract = new ethers.Contract(contractAddress, abi, signer);
@@ -106,7 +145,7 @@ const Home = () => {
         setBalance(total.toString());
         setBuyToken("");
       });
-      console.log(tx.hash);
+
       setHash(tx.hash);
     } catch (error) {
       console.log(error);
@@ -221,7 +260,7 @@ const Home = () => {
                                     "block px-4 py-2 text-sm text-gray-700 text-ellipsis overflow-hidden"
                                   )}
                                 >
-                                  ID: {accounts}
+                                  ID: {myAccount}
                                 </a>
                               )}
                             </Menu.Item>
