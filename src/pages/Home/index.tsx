@@ -137,7 +137,7 @@ Ethereum contract address "0x5a1301d99489931059f5e89138edfec7fe52648b". */
       const tx = await smartContract.buy({
         value: valueConvertEther,
       });
-      smartContract.on("Transfer", (form, to, tokens) => {
+      smartContract.on("Transfer", ( tokens) => {
         // console.log({ form, to, tokens, tx });
         const tokenFloat: number = parseFloat(formatEther(tokens));
         const balanceFloat: number = parseFloat(balance);
